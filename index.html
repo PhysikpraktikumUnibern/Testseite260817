@@ -1869,11 +1869,11 @@ function baueVergangenheit() {
     eintraege.sort(
         (a, b) =>
             datumAusDeutsch(
-                b.datum
+                a.datum
             )
             -
             datumAusDeutsch(
-                a.datum
+                b.datum
             )
     );
 
