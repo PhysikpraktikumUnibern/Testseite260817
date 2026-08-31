@@ -2124,6 +2124,10 @@ async function baueHauptansicht() {
 
 /* =========================================================
    Vergangenheit ein-/ausblenden
+
+   Die früheren Vorlesungen werden nach oben aufgeklappt.
+   Die aktuelle Vorlesung bleibt dabei optisch an derselben
+   Stelle im Browserfenster.
 ========================================================= */
 
 document
@@ -2133,10 +2137,6 @@ document
     .addEventListener(
         "click",
         function() {
-
-            vergangenheitSichtbar =
-                !vergangenheitSichtbar;
-
 
             const vergangenheit =
                 document.getElementById(
@@ -2150,31 +2150,118 @@ document
                 );
 
 
+            /*
+                Aktuelle / erste sichtbare Vorlesung merken.
+            */
+
+            const ersteAktuelleVorlesung =
+                document
+                    .getElementById(
+                        "inhalt"
+                    )
+                    .querySelector(
+                        ".tag"
+                    );
+
+
+            let altePosition =
+                null;
+
+
+            if (
+                ersteAktuelleVorlesung
+            ) {
+
+                altePosition =
+                    ersteAktuelleVorlesung
+                        .getBoundingClientRect()
+                        .top;
+            }
+
+
+            vergangenheitSichtbar =
+                !vergangenheitSichtbar;
+
+
             if (
                 vergangenheitSichtbar
             ) {
 
+                /*
+                    Vergangene Vorlesungen erzeugen.
+                */
+
                 baueVergangenheit();
 
-                vergangenheit.classList.add(
-                    "aktiv"
-                );
+
+                vergangenheit
+                    .classList
+                    .add(
+                        "aktiv"
+                    );
+
 
                 button.textContent =
                     "↓ Frühere Vorlesungen ausblenden";
 
+
             } else {
 
-                vergangenheit.classList.remove(
-                    "aktiv"
-                );
+                vergangenheit
+                    .classList
+                    .remove(
+                        "aktiv"
+                    );
+
 
                 button.textContent =
                     "↑ Frühere Vorlesungen anzeigen";
             }
+
+
+            /*
+                Nach dem Öffnen/Schliessen muss der Browser
+                zuerst das neue Layout berechnen.
+            */
+
+            requestAnimationFrame(
+                function() {
+
+                    if (
+                        !ersteAktuelleVorlesung
+                        ||
+                        altePosition === null
+                    ) {
+
+                        return;
+                    }
+
+
+                    const neuePosition =
+                        ersteAktuelleVorlesung
+                            .getBoundingClientRect()
+                            .top;
+
+
+                    /*
+                        Differenz ausgleichen.
+
+                        Dadurch bleibt die aktuelle Vorlesung
+                        genau dort, wo sie vorher war.
+
+                        Die Vergangenheit erscheint darüber.
+                    */
+
+                    window.scrollBy(
+                        0,
+                        neuePosition
+                        -
+                        altePosition
+                    );
+                }
+            );
         }
     );
-
 
 /* =========================================================
    Start
