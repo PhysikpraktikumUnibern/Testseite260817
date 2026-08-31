@@ -1932,6 +1932,10 @@ function baueVergangenheit() {
 
 /* =========================================================
    Hauptansicht
+
+   - aktuelle Vorlesung vollständig
+   - alle zukünftigen eigenen Vorlesungen vollständig
+   - Vergleich nur bei Bedarf
 ========================================================= */
 
 async function baueHauptansicht() {
@@ -1950,6 +1954,10 @@ async function baueHauptansicht() {
         [];
 
 
+    /* -----------------------------------------------------
+       Eigene aktuelle + zukünftige Vorlesungen
+    ----------------------------------------------------- */
+
     for (
         const eintrag
         of zukunftEigene
@@ -1962,6 +1970,10 @@ async function baueHauptansicht() {
         });
     }
 
+
+    /* -----------------------------------------------------
+       Vergleichsserie nur wenn eingeblendet
+    ----------------------------------------------------- */
 
     if (
         vergleichAnzeigen
@@ -1995,6 +2007,14 @@ async function baueHauptansicht() {
         );
     }
 
+
+    /* -----------------------------------------------------
+       Chronologisch sortieren
+
+       Bei gleichem Datum:
+       eigene Serie zuerst,
+       Vergleich daneben.
+    ----------------------------------------------------- */
 
     eintraege.sort(
         (a, b) => {
@@ -2032,6 +2052,10 @@ async function baueHauptansicht() {
         );
 
 
+    /* -----------------------------------------------------
+       Tagesblöcke erzeugen
+    ----------------------------------------------------- */
+
     for (
         const [
             datum,
@@ -2052,6 +2076,15 @@ async function baueHauptansicht() {
             );
 
 
+        container.appendChild(
+            tag
+        );
+
+
+        /* -------------------------------------------------
+           Vorlesungen dieses Tages laden
+        ------------------------------------------------- */
+
         for (
             const eintrag
             of gruppe
@@ -2067,57 +2100,129 @@ async function baueHauptansicht() {
                 naechsterEigenerEintrag.datei;
 
 
+            /*
+                Zunächst Platzhalter anzeigen.
+
+                So erscheint die Seite sofort,
+                während die JSON-Datei geladen wird.
+            */
+
+            const platzhalter =
+                document.createElement(
+                    "div"
+                );
+
+
+            platzhalter.className =
+                "kurzansicht";
+
+
             if (
-                istNaechste
+                eintrag.typ === "vergleich"
             ) {
 
-                try {
-
-                    const daten =
-                        await ladeVorlesungsDatei(
-                            eintrag
-                        );
+                platzhalter.classList.add(
+                    "vergleich"
+                );
+            }
 
 
-                    grid.appendChild(
-                        erzeugeVorlesung(
-                            eintrag,
-                            daten,
-                            "eigen",
-                            true
-                        )
+            platzhalter.dataset.typ =
+                eintrag.typ;
+
+
+            platzhalter.textContent =
+                "Vorlesung "
+                +
+                eintrag.vorlesungsnummer
+                +
+                " wird geladen …";
+
+
+            grid.appendChild(
+                platzhalter
+            );
+
+
+            aktualisiereTagGrid(
+                tag
+            );
+
+
+            try {
+
+                const daten =
+                    await ladeVorlesungsDatei(
+                        eintrag
                     );
 
-                } catch (fehler) {
 
-                    grid.appendChild(
-                        erzeugeKurzansicht(
-                            eintrag,
-                            "eigen"
-                        )
+                const voll =
+                    erzeugeVorlesung(
+                        eintrag,
+                        daten,
+                        eintrag.typ,
+                        istNaechste
                     );
-                }
 
-            } else {
 
-                grid.appendChild(
+                voll.dataset.typ =
+                    eintrag.typ;
+
+
+                platzhalter.replaceWith(
+                    voll
+                );
+
+
+                aktualisiereTagGrid(
+                    tag
+                );
+
+
+            } catch (fehler) {
+
+                console.error(
+                    fehler
+                );
+
+
+                /*
+                    Falls das Laden nicht klappt,
+                    Kurzansicht als Fallback.
+                */
+
+                const kurz =
                     erzeugeKurzansicht(
                         eintrag,
                         eintrag.typ
-                    )
+                    );
+
+
+                platzhalter.replaceWith(
+                    kurz
+                );
+
+
+                aktualisiereTagGrid(
+                    tag
                 );
             }
+
+
+            /*
+                Dem Browser kurz Gelegenheit zum Zeichnen geben.
+                Dadurch wirkt das Laden bei vielen Vorlesungen
+                etwas flüssiger.
+            */
+
+            await new Promise(
+                resolve =>
+                    requestAnimationFrame(
+                        resolve
+                    )
+            );
         }
-
-
-        container.appendChild(
-            tag
-        );
-
-
-        aktualisiereTagGrid(
-            tag
-        );
     }
 }
 
