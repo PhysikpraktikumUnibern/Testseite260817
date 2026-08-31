@@ -9,6 +9,10 @@
 
 <style>
 
+/* =========================================================
+   Grundlayout
+========================================================= */
+
 body {
     font-family: Arial, sans-serif;
     max-width: 1500px;
@@ -35,7 +39,7 @@ h1 {
 
 
 /* =========================================================
-   Navigation Vergangenheit
+   Vergangenheit
 ========================================================= */
 
 .vergangenheit-steuerung {
@@ -68,7 +72,7 @@ h1 {
 
 
 /* =========================================================
-   Tagesblock
+   Tagesblöcke
 ========================================================= */
 
 .tag {
@@ -93,7 +97,7 @@ h1 {
 
 
 /* =========================================================
-   Vorlesung
+   Vorlesungen
 ========================================================= */
 
 .vorlesung {
@@ -157,7 +161,7 @@ h1 {
 
 
 /* =========================================================
-   Hinweise
+   Kennzeichnungen
 ========================================================= */
 
 .serien-hinweis {
@@ -217,6 +221,11 @@ h1 {
     background: #dfeaf0;
 }
 
+.aktion-button:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
 .mail-button {
     border: 1px solid #70808a;
     color: #405d6f;
@@ -228,7 +237,7 @@ h1 {
 
 
 /* =========================================================
-   Kompakte Vorlesung
+   Kompakte vergangene Vorlesung
 ========================================================= */
 
 .kurzansicht {
@@ -236,10 +245,15 @@ h1 {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+
     padding: 14px 18px;
+
     background: white;
+
     border: 1px solid #bfc7cc;
     border-radius: 9px;
+
+    color: #5f6a71;
 }
 
 .kurzansicht.vergleich {
@@ -262,6 +276,24 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+}
+
+
+/* =========================================================
+   Ladeanzeige für zukünftige Vorlesungen
+========================================================= */
+
+.lade-karte {
+    padding: 18px;
+    background: white;
+    border: 1px solid #ccd2d6;
+    border-radius: 10px;
+    color: #777;
+}
+
+.lade-karte.vergleich {
+    border-color: #d0a36c;
+    background: #fffaf4;
 }
 
 
@@ -289,9 +321,12 @@ h1 {
 .versuch {
     margin: 8px 0;
     padding: 10px 12px;
+
     background: white;
+
     border: 1px solid #ddd;
     border-radius: 6px;
+
     cursor: pointer;
 }
 
@@ -327,13 +362,15 @@ h1 {
 
 
 /* =========================================================
-   Details
+   Versuchsdetails
 ========================================================= */
 
 .versuch-detail {
     display: none;
+
     margin-top: 14px;
     padding-top: 14px;
+
     border-top: 1px solid #ddd;
 }
 
@@ -343,16 +380,29 @@ h1 {
     gap: 18px;
 }
 
+.thumbnail-bereich {
+    min-width: 0;
+}
+
 .versuch-thumbnail {
     width: 100%;
     max-width: 500px;
     max-height: 340px;
+
     object-fit: contain;
+
+    display: block;
+
     background: white;
+
     border: 1px solid #ddd;
     border-radius: 8px;
+
     cursor: zoom-in;
-    display: block;
+}
+
+.versuch-thumbnail:hover {
+    opacity: 0.9;
 }
 
 .bild-hinweis {
@@ -382,13 +432,20 @@ h1 {
 
 #lightbox {
     display: none;
+
     position: fixed;
     inset: 0;
+
     z-index: 10000;
+
     background: rgba(0, 0, 0, 0.88);
+
     align-items: center;
     justify-content: center;
+
     padding: 30px;
+
+    box-sizing: border-box;
 }
 
 #lightbox.aktiv {
@@ -398,18 +455,27 @@ h1 {
 #lightboxBild {
     max-width: 95vw;
     max-height: 92vh;
+
     object-fit: contain;
+
     background: white;
+
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
 }
 
 #lightboxSchliessen {
     position: fixed;
+
     top: 15px;
     right: 22px;
+
     border: 0;
+
     background: transparent;
     color: white;
+
     font-size: 38px;
+
     cursor: pointer;
 }
 
@@ -446,6 +512,7 @@ h1 {
 
 <body>
 
+
 <h1>Vorlesungsplanung</h1>
 
 <div id="status">
@@ -455,12 +522,18 @@ h1 {
 <div id="fehler"></div>
 
 
+<!-- ======================================================
+     Frühere Vorlesungen
+======================================================= -->
+
 <div class="vergangenheit-steuerung">
 
     <button
         id="vergangenheitButton"
         class="vergangenheit-button">
+
         ↑ Frühere Vorlesungen anzeigen
+
     </button>
 
 </div>
@@ -468,12 +541,23 @@ h1 {
 
 <div id="vergangenheit"></div>
 
+
+<!-- ======================================================
+     Aktuelle + zukünftige Vorlesungen
+======================================================= -->
+
 <div id="inhalt"></div>
 
 
+<!-- ======================================================
+     Lightbox
+======================================================= -->
+
 <div id="lightbox">
 
-    <button id="lightboxSchliessen">
+    <button
+        id="lightboxSchliessen"
+        aria-label="Bild schliessen">
         ×
     </button>
 
@@ -497,54 +581,88 @@ const MAIL_ADRESSE =
 
 
 /*
+    ========================================================
     TESTMODUS
 
-    aktuell:
-    Serie 2
-    09.05.2026
+    Aktuell:
 
-    Produktiv später:
+    Stammvorlesungsserie 2
+    Datum 09.05.2026
+
+    Für den Produktivbetrieb später:
 
     const TEST_SERIE = null;
     const TEST_DATUM = null;
+    ========================================================
 */
 
-const TEST_SERIE = 2;
+const TEST_SERIE =
+    2;
+
 
 const TEST_DATUM =
-    new Date(2026, 4, 9);
+    new Date(
+        2026,
+        4,
+        9
+    );
 
 
 /* =========================================================
    Globale Variablen
 ========================================================= */
 
-let indexDaten = null;
+let indexDaten =
+    null;
 
-let eigeneSerie = null;
 
-let vergleichsSerie = null;
+let eigeneSerie =
+    null;
 
-let vergleichAnzeigen = false;
 
-let vergangenheitSichtbar = false;
+let vergleichsSerie =
+    null;
 
-let eigeneEintraege = [];
 
-let vergleichsEintraege = [];
+let vergleichAnzeigen =
+    false;
 
-let vergangeneEigene = [];
 
-let zukunftEigene = [];
+let vergangenheitSichtbar =
+    false;
 
-let naechsterEigenerEintrag = null;
+
+let eigeneEintraege =
+    [];
+
+
+let vergleichsEintraege =
+    [];
+
+
+let vergangeneEigene =
+    [];
+
+
+let zukunftEigene =
+    [];
+
+
+let naechsterEigenerEintrag =
+    null;
+
+
+/*
+    Bereits geladene Vorlesungsdateien
+    bleiben im Arbeitsspeicher.
+*/
 
 const datenCache =
     new Map();
 
 
 /* =========================================================
-   Serie bestimmen
+   Stammserie bestimmen
 ========================================================= */
 
 const parameter =
@@ -553,29 +671,59 @@ const parameter =
     );
 
 
-eigeneSerie =
+if (
     TEST_SERIE !== null
-    ?
-    TEST_SERIE
-    :
-    Number(
-        parameter.get("serie")
-    );
+) {
+
+    eigeneSerie =
+        TEST_SERIE;
+
+} else {
+
+    eigeneSerie =
+        Number(
+            parameter.get(
+                "serie"
+            )
+        );
+}
 
 
 /* =========================================================
    Datum
 ========================================================= */
 
-function datumAusDeutsch(text) {
+function datumAusDeutsch(
+    text
+) {
+
+    if (!text) {
+        return null;
+    }
+
 
     const teile =
         text.split(".");
 
+
+    if (
+        teile.length !== 3
+    ) {
+
+        return null;
+    }
+
+
     return new Date(
-        Number(teile[2]),
-        Number(teile[1]) - 1,
-        Number(teile[0])
+        Number(
+            teile[2]
+        ),
+        Number(
+            teile[1]
+        ) - 1,
+        Number(
+            teile[0]
+        )
     );
 }
 
@@ -597,10 +745,38 @@ function heuteOhneUhrzeit() {
     const jetzt =
         new Date();
 
+
     return new Date(
         jetzt.getFullYear(),
         jetzt.getMonth(),
         jetzt.getDate()
+    );
+}
+
+
+/* =========================================================
+   Vorlesungsnummer formatieren
+========================================================= */
+
+function formatVorlesungsnummer(
+    nummer
+) {
+
+    if (
+        nummer === undefined
+        ||
+        nummer === null
+    ) {
+
+        return "";
+    }
+
+
+    return String(
+        nummer
+    ).padStart(
+        2,
+        "0"
     );
 }
 
@@ -621,17 +797,21 @@ function mailLink(
         +
         "?subject="
         +
-        encodeURIComponent(betreff)
+        encodeURIComponent(
+            betreff
+        )
         +
         "&body="
         +
-        encodeURIComponent(text)
+        encodeURIComponent(
+            text
+        )
     );
 }
 
 
 /* =========================================================
-   JSON laden
+   Vorlesungsdatei laden
 ========================================================= */
 
 async function ladeVorlesungsDatei(
@@ -650,13 +830,22 @@ async function ladeVorlesungsDatei(
     }
 
 
+    /*
+        Nur index.json wird später mit no-store geladen.
+
+        Die einzelnen Vorlesungsdateien dürfen vom
+        Browser gecacht werden.
+    */
+
     const antwort =
         await fetch(
             eintrag.datei
         );
 
 
-    if (!antwort.ok) {
+    if (
+        !antwort.ok
+    ) {
 
         throw new Error(
             "Vorlesungsdatei konnte nicht geladen werden: "
@@ -681,7 +870,7 @@ async function ladeVorlesungsDatei(
 
 
 /* =========================================================
-   Vergleich bestimmen
+   Vergleichsserie bestimmen
 ========================================================= */
 
 function bestimmeVergleichsSerie() {
@@ -717,14 +906,23 @@ function bestimmeVergleichsSerie() {
 ========================================================= */
 
 function oeffneLightbox(
-    pfad,
-    alt
+    bildPfad,
+    altText
 ) {
+
+    if (
+        !bildPfad
+    ) {
+
+        return;
+    }
+
 
     const lightbox =
         document.getElementById(
             "lightbox"
         );
+
 
     const bild =
         document.getElementById(
@@ -732,16 +930,25 @@ function oeffneLightbox(
         );
 
 
+    /*
+        Das grosse Bild wird erst geladen,
+        wenn es wirklich angeklickt wird.
+    */
+
     bild.src =
-        pfad;
+        bildPfad;
+
 
     bild.alt =
-        alt || "";
+        altText || "";
 
 
-    lightbox.classList.add(
-        "aktiv"
-    );
+    lightbox
+        .classList
+        .add(
+            "aktiv"
+        );
+
 
     document.body.style.overflow =
         "hidden";
@@ -755,7 +962,9 @@ function schliesseLightbox() {
             "lightbox"
         )
         .classList
-        .remove("aktiv");
+        .remove(
+            "aktiv"
+        );
 
 
     document
@@ -816,7 +1025,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   Versuch
+   Versuch erzeugen
 ========================================================= */
 
 function erzeugeVersuch(
@@ -826,44 +1035,66 @@ function erzeugeVersuch(
 ) {
 
     const element =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     element.className =
         "versuch";
 
 
+    /* -----------------------------------------------------
+       Versuchskopf
+    ----------------------------------------------------- */
+
     const kopf =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     kopf.className =
         "versuch-kopf";
 
 
     const reihenfolge =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     reihenfolge.className =
         "reihenfolge";
+
 
     reihenfolge.textContent =
         versuch.reihenfolge || "";
 
 
     const name =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     name.className =
         "versuch-name";
+
 
     name.textContent =
         versuch.versuch || "";
 
 
     const pfeil =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     pfeil.className =
         "pfeil";
+
 
     pfeil.textContent =
         "▾";
@@ -873,24 +1104,43 @@ function erzeugeVersuch(
         reihenfolge
     );
 
+
     kopf.appendChild(
         name
     );
+
 
     kopf.appendChild(
         pfeil
     );
 
 
+    /* -----------------------------------------------------
+       Detailbereich
+    ----------------------------------------------------- */
+
     const detail =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     detail.className =
         "versuch-detail";
 
 
+    /* -----------------------------------------------------
+       Thumbnail
+    ----------------------------------------------------- */
+
     const bildBereich =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
+
+    bildBereich.className =
+        "thumbnail-bereich";
 
 
     if (
@@ -902,12 +1152,21 @@ function erzeugeVersuch(
     ) {
 
         const thumbnail =
-            document.createElement("img");
+            document.createElement(
+                "img"
+            );
 
 
         thumbnail.className =
             "versuch-thumbnail";
 
+
+        /*
+            Wenn ein echtes Thumbnail vorhanden ist,
+            verwenden wir dieses.
+
+            Sonst dient das Originalbild als Fallback.
+        */
 
         thumbnail.src =
             versuch.thumbnail
@@ -915,15 +1174,23 @@ function erzeugeVersuch(
             versuch.bild;
 
 
+        /*
+            Bilder weit unten auf der Seite werden
+            nicht sofort geladen.
+        */
+
         thumbnail.loading =
             "lazy";
+
 
         thumbnail.decoding =
             "async";
 
 
         thumbnail.alt =
-            versuch.versuch || "";
+            versuch.versuch
+            ||
+            "Versuchsbild";
 
 
         thumbnail.addEventListener(
@@ -931,6 +1198,7 @@ function erzeugeVersuch(
             function(event) {
 
                 event.stopPropagation();
+
 
                 oeffneLightbox(
                     versuch.bild,
@@ -946,10 +1214,14 @@ function erzeugeVersuch(
 
 
         const hinweis =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         hinweis.className =
             "bild-hinweis";
+
 
         hinweis.textContent =
             "Bild anklicken für grosse Ansicht";
@@ -962,10 +1234,14 @@ function erzeugeVersuch(
     } else {
 
         const keinBild =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         keinBild.className =
             "kein-bild";
+
 
         keinBild.textContent =
             "Kein Bild vorhanden.";
@@ -977,15 +1253,25 @@ function erzeugeVersuch(
     }
 
 
+    /* -----------------------------------------------------
+       Text
+    ----------------------------------------------------- */
+
     const textBereich =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     const text =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     text.className =
         "versuch-text";
+
 
     text.textContent =
         versuch.text
@@ -998,36 +1284,51 @@ function erzeugeVersuch(
     );
 
 
+    /* -----------------------------------------------------
+       Mailbutton Versuch
+    ----------------------------------------------------- */
+
     const mailBereich =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     mailBereich.className =
         "versuch-mail";
 
 
-    const frage =
-        document.createElement("a");
+    const frageButton =
+        document.createElement(
+            "a"
+        );
 
-    frage.className =
+
+    frageButton.className =
         "mail-button";
 
-    frage.textContent =
+
+    frageButton.textContent =
         "✉ Frage zum Versuch";
 
 
-    frage.href =
+    frageButton.href =
         mailLink(
 
             "Frage zum Versuch: "
             +
             (
-                versuch.versuch || ""
+                versuch.versuch
+                ||
+                ""
             ),
 
             "Ich habe eine Frage zum Versuch „"
             +
             (
-                versuch.versuch || ""
+                versuch.versuch
+                ||
+                ""
             )
             +
             "“.\n\n"
@@ -1046,7 +1347,7 @@ function erzeugeVersuch(
         );
 
 
-    frage.addEventListener(
+    frageButton.addEventListener(
         "click",
         function(event) {
 
@@ -1056,7 +1357,7 @@ function erzeugeVersuch(
 
 
     mailBereich.appendChild(
-        frage
+        frageButton
     );
 
 
@@ -1069,6 +1370,7 @@ function erzeugeVersuch(
         bildBereich
     );
 
+
     detail.appendChild(
         textBereich
     );
@@ -1078,24 +1380,34 @@ function erzeugeVersuch(
         kopf
     );
 
+
     element.appendChild(
         detail
     );
 
+
+    /* -----------------------------------------------------
+       Versuch auf-/zuklappen
+    ----------------------------------------------------- */
 
     element.addEventListener(
         "click",
         function() {
 
             const aktiv =
-                element.classList.toggle(
-                    "aktiv"
-                );
+                element
+                    .classList
+                    .toggle(
+                        "aktiv"
+                    );
+
 
             pfeil.textContent =
                 aktiv
-                ? "▴"
-                : "▾";
+                ?
+                "▴"
+                :
+                "▾";
         }
     );
 
@@ -1105,19 +1417,23 @@ function erzeugeVersuch(
 
 
 /* =========================================================
-   Mailbutton Vorlesung
+   Vorlesungs-Mailbutton
 ========================================================= */
 
 function erzeugeVorlesungsMailbutton(
     eintrag,
-    nummer
+    vorlesungsnummer
 ) {
 
     const mail =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
+
 
     mail.className =
         "mail-button";
+
 
     mail.textContent =
         "✉ Frage zur Vorlesung";
@@ -1128,7 +1444,7 @@ function erzeugeVorlesungsMailbutton(
 
             "Frage zur Vorlesung "
             +
-            nummer
+            vorlesungsnummer
             +
             " vom "
             +
@@ -1136,7 +1452,7 @@ function erzeugeVorlesungsMailbutton(
 
             "Ich habe eine Frage zur Vorlesung "
             +
-            nummer
+            vorlesungsnummer
             +
             " vom "
             +
@@ -1160,7 +1476,7 @@ function erzeugeVorlesungsMailbutton(
 
 
 /* =========================================================
-   Vergleich
+   Vergleichsbutton
 ========================================================= */
 
 function erzeugeVergleichsButton() {
@@ -1174,7 +1490,10 @@ function erzeugeVergleichsButton() {
 
 
     const button =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
+
 
     button.className =
         "aktion-button";
@@ -1197,6 +1516,18 @@ function erzeugeVergleichsButton() {
 
             vergleichAnzeigen =
                 !vergleichAnzeigen;
+
+
+            document
+                .getElementById(
+                    "status"
+                )
+                .textContent =
+                    vergleichAnzeigen
+                    ?
+                    "Vergleich wird geladen …"
+                    :
+                    "Vergleich wird ausgeblendet …";
 
 
             if (
@@ -1231,9 +1562,37 @@ function erzeugeVergleichsButton() {
             }
 
 
+            /*
+                Hauptansicht neu zeichnen.
+
+                Aktuelle und zukünftige Vorlesungen
+                werden vollständig angezeigt.
+            */
+
             await baueHauptansicht();
 
-            baueVergangenheit();
+
+            /*
+                Falls Vergangenheit gerade geöffnet ist,
+                auch diese neu zeichnen.
+            */
+
+            if (
+                vergangenheitSichtbar
+            ) {
+
+                baueVergangenheit();
+            }
+
+
+            document
+                .getElementById(
+                    "status"
+                )
+                .textContent =
+                    "Stammvorlesungsserie "
+                    +
+                    eigeneSerie;
         }
     );
 
@@ -1243,7 +1602,7 @@ function erzeugeVergleichsButton() {
 
 
 /* =========================================================
-   Volle Vorlesung
+   Vollständige Vorlesung
 ========================================================= */
 
 function erzeugeVorlesung(
@@ -1254,7 +1613,9 @@ function erzeugeVorlesung(
 ) {
 
     const element =
-        document.createElement("article");
+        document.createElement(
+            "article"
+        );
 
 
     element.className =
@@ -1277,29 +1638,45 @@ function erzeugeVorlesung(
     }
 
 
+    /* -----------------------------------------------------
+       Kopf
+    ----------------------------------------------------- */
+
     const kopf =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     kopf.className =
         "vorlesung-kopf";
 
 
     const kopfZeile =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     kopfZeile.className =
         "vorlesung-kopf-zeile";
 
 
     const titelBereich =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     titelBereich.className =
         "vorlesung-titel";
 
 
     const titel =
-        document.createElement("h2");
+        document.createElement(
+            "h2"
+        );
+
 
     titel.textContent =
         "Vorlesung "
@@ -1308,7 +1685,10 @@ function erzeugeVorlesung(
 
 
     const hinweis =
-        document.createElement("span");
+        document.createElement(
+            "span"
+        );
+
 
     hinweis.className =
         "serien-hinweis "
@@ -1317,7 +1697,8 @@ function erzeugeVorlesung(
 
 
     hinweis.textContent =
-        typ === "eigen"
+        typ ===
+        "eigen"
         ?
         "Ihre Vorlesungsserie"
         :
@@ -1327,6 +1708,7 @@ function erzeugeVorlesung(
     titelBereich.appendChild(
         titel
     );
+
 
     titelBereich.appendChild(
         hinweis
@@ -1338,10 +1720,14 @@ function erzeugeVorlesung(
     ) {
 
         const marker =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
+
 
         marker.className =
             "naechste-marker";
+
 
         marker.textContent =
             "NÄCHSTE VORLESUNG";
@@ -1358,35 +1744,45 @@ function erzeugeVorlesung(
     );
 
 
+    /* -----------------------------------------------------
+       Aktionen
+    ----------------------------------------------------- */
+
     const aktionen =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     aktionen.className =
         "vorlesung-aktionen";
 
 
     aktionen.appendChild(
+
         erzeugeVorlesungsMailbutton(
             eintrag,
             daten.vorlesung
         )
+
     );
 
 
     if (
-        typ === "eigen"
+        typ ===
+        "eigen"
     ) {
 
-        const vergleich =
+        const vergleichButton =
             erzeugeVergleichsButton();
 
 
         if (
-            vergleich
+            vergleichButton
         ) {
 
             aktionen.appendChild(
-                vergleich
+                vergleichButton
             );
         }
     }
@@ -1401,10 +1797,15 @@ function erzeugeVorlesung(
         kopfZeile
     );
 
+
     element.appendChild(
         kopf
     );
 
+
+    /* -----------------------------------------------------
+       Lektionen
+    ----------------------------------------------------- */
 
     const lektionen =
         Array.isArray(
@@ -1422,23 +1823,29 @@ function erzeugeVorlesung(
     ) {
 
         const lektionsElement =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         lektionsElement.className =
             "lektion";
 
 
-        const titel =
-            document.createElement("h3");
+        const lektionTitel =
+            document.createElement(
+                "h3"
+            );
 
-        titel.textContent =
+
+        lektionTitel.textContent =
             "Lektion "
             +
             lektion.lektion;
 
 
         lektionsElement.appendChild(
-            titel
+            lektionTitel
         );
 
 
@@ -1458,11 +1865,13 @@ function erzeugeVorlesung(
         ) {
 
             lektionsElement.appendChild(
+
                 erzeugeVersuch(
                     versuch,
                     eintrag,
                     daten
                 )
+
             );
         }
 
@@ -1478,7 +1887,9 @@ function erzeugeVorlesung(
 
 
 /* =========================================================
-   Kurzansicht
+   Kompakte Vorlesung
+
+   Wird NUR für die Vergangenheit verwendet.
 ========================================================= */
 
 function erzeugeKurzansicht(
@@ -1487,14 +1898,18 @@ function erzeugeKurzansicht(
 ) {
 
     const element =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     element.className =
         "kurzansicht";
 
 
     if (
-        typ === "vergleich"
+        typ ===
+        "vergleich"
     ) {
 
         element.classList.add(
@@ -1508,30 +1923,42 @@ function erzeugeKurzansicht(
 
 
     const info =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     info.className =
         "kurz-info";
 
 
     const titel =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     titel.className =
         "kurz-titel";
 
-    titel.textContent =
-        "Vorlesung "
-        +
-        (
+
+    const nummer =
+        formatVorlesungsnummer(
             eintrag.vorlesungsnummer
-            ??
-            ""
         );
 
 
+    titel.textContent =
+        "Vorlesung "
+        +
+        nummer;
+
+
     const hinweis =
-        document.createElement("span");
+        document.createElement(
+            "span"
+        );
+
 
     hinweis.className =
         "serien-hinweis "
@@ -1540,7 +1967,8 @@ function erzeugeKurzansicht(
 
 
     hinweis.textContent =
-        typ === "eigen"
+        typ ===
+        "eigen"
         ?
         "Ihre Vorlesungsserie"
         :
@@ -1551,23 +1979,35 @@ function erzeugeKurzansicht(
         titel
     );
 
+
     info.appendChild(
         hinweis
     );
 
 
     const aktionen =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     aktionen.className =
         "kurz-aktionen";
 
 
+    /* -----------------------------------------------------
+       Alte Vorlesung bei Bedarf vollständig laden
+    ----------------------------------------------------- */
+
     const anzeigen =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
+
 
     anzeigen.className =
         "aktion-button";
+
 
     anzeigen.textContent =
         "Vorlesung anzeigen";
@@ -1575,10 +2015,14 @@ function erzeugeKurzansicht(
 
     anzeigen.addEventListener(
         "click",
-        async function() {
+        async function(event) {
+
+            event.stopPropagation();
+
 
             anzeigen.disabled =
                 true;
+
 
             anzeigen.textContent =
                 "Wird geladen …";
@@ -1601,19 +2045,31 @@ function erzeugeKurzansicht(
                     );
 
 
+                voll.dataset.typ =
+                    typ;
+
+
                 element.replaceWith(
                     voll
                 );
 
 
                 aktualisiereTagGrid(
-                    voll.closest(".tag")
+                    voll.closest(
+                        ".tag"
+                    )
                 );
 
             } catch (fehler) {
 
+                console.error(
+                    fehler
+                );
+
+
                 anzeigen.disabled =
                     false;
+
 
                 anzeigen.textContent =
                     "Erneut versuchen";
@@ -1627,28 +2083,39 @@ function erzeugeKurzansicht(
     );
 
 
+    /* -----------------------------------------------------
+       Mail
+    ----------------------------------------------------- */
+
     aktionen.appendChild(
+
         erzeugeVorlesungsMailbutton(
             eintrag,
-            eintrag.vorlesungsnummer
+            nummer
         )
+
     );
 
 
+    /* -----------------------------------------------------
+       Vergleich
+    ----------------------------------------------------- */
+
     if (
-        typ === "eigen"
+        typ ===
+        "eigen"
     ) {
 
-        const vergleich =
+        const vergleichButton =
             erzeugeVergleichsButton();
 
 
         if (
-            vergleich
+            vergleichButton
         ) {
 
             aktionen.appendChild(
-                vergleich
+                vergleichButton
             );
         }
     }
@@ -1657,6 +2124,7 @@ function erzeugeKurzansicht(
     element.appendChild(
         info
     );
+
 
     element.appendChild(
         aktionen
@@ -1676,27 +2144,38 @@ function erzeugeTag(
 ) {
 
     const tag =
-        document.createElement("section");
+        document.createElement(
+            "section"
+        );
+
 
     tag.className =
         "tag";
+
 
     tag.dataset.datum =
         datum;
 
 
     const datumTitel =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     datumTitel.className =
         "tag-datum";
+
 
     datumTitel.textContent =
         datum;
 
 
     const grid =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     grid.className =
         "tag-grid";
@@ -1705,6 +2184,7 @@ function erzeugeTag(
     tag.appendChild(
         datumTitel
     );
+
 
     tag.appendChild(
         grid
@@ -1716,7 +2196,7 @@ function erzeugeTag(
 
 
 /* =========================================================
-   Grid aktualisieren
+   Tages-Grid aktualisieren
 ========================================================= */
 
 function aktualisiereTagGrid(
@@ -1732,6 +2212,11 @@ function aktualisiereTagGrid(
         tag.querySelector(
             ".tag-grid"
         );
+
+
+    if (!grid) {
+        return;
+    }
 
 
     const eigen =
@@ -1766,7 +2251,7 @@ function aktualisiereTagGrid(
 
 
 /* =========================================================
-   Einträge gruppieren
+   Einträge nach Datum gruppieren
 ========================================================= */
 
 function gruppiereEintraege(
@@ -1809,6 +2294,13 @@ function gruppiereEintraege(
 
 /* =========================================================
    Vergangenheit aufbauen
+
+   WICHTIG:
+
+   alt -> neu
+
+   Dadurch steht die unmittelbar vorhergehende
+   Vorlesung direkt oberhalb der aktuellen.
 ========================================================= */
 
 function baueVergangenheit() {
@@ -1832,6 +2324,10 @@ function baueVergangenheit() {
             })
         );
 
+
+    /* -----------------------------------------------------
+       Vergangene Vergleichsvorlesungen
+    ----------------------------------------------------- */
 
     if (
         vergleichAnzeigen
@@ -1866,15 +2362,55 @@ function baueVergangenheit() {
     }
 
 
+    /*
+        ALT -> NEU
+
+        Beispiel:
+
+        11.04.
+        18.04.
+        25.04.
+        02.05.
+        ----------------
+        aktuelle: 09.05.
+    */
+
     eintraege.sort(
-        (a, b) =>
-            datumAusDeutsch(
-                a.datum
-            )
-            -
-            datumAusDeutsch(
-                b.datum
-            )
+        (a, b) => {
+
+            const differenz =
+                datumAusDeutsch(
+                    a.datum
+                )
+                -
+                datumAusDeutsch(
+                    b.datum
+                );
+
+
+            if (
+                differenz !== 0
+            ) {
+
+                return differenz;
+            }
+
+
+            /*
+                Bei gleichem Datum:
+                eigene Serie links,
+                Vergleich rechts.
+            */
+
+            return (
+                a.typ ===
+                "eigen"
+                ?
+                -1
+                :
+                1
+            );
+        }
     );
 
 
@@ -1910,10 +2446,12 @@ function baueVergangenheit() {
         ) {
 
             grid.appendChild(
+
                 erzeugeKurzansicht(
                     eintrag,
                     eintrag.typ
                 )
+
             );
         }
 
@@ -1931,11 +2469,14 @@ function baueVergangenheit() {
 
 
 /* =========================================================
-   Hauptansicht
+   HAUPTANSICHT
 
-   - aktuelle Vorlesung vollständig
-   - alle zukünftigen eigenen Vorlesungen vollständig
-   - Vergleich nur bei Bedarf
+   Hier liegt jetzt der wichtige Unterschied:
+
+   ALLE aktuellen und zukünftigen Vorlesungen
+   werden vollständig geladen und angezeigt.
+
+   Es gibt für die Zukunft KEINE Kurzansichten.
 ========================================================= */
 
 async function baueHauptansicht() {
@@ -1954,9 +2495,9 @@ async function baueHauptansicht() {
         [];
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        Eigene aktuelle + zukünftige Vorlesungen
-    ----------------------------------------------------- */
+    ===================================================== */
 
     for (
         const eintrag
@@ -1971,9 +2512,9 @@ async function baueHauptansicht() {
     }
 
 
-    /* -----------------------------------------------------
-       Vergleichsserie nur wenn eingeblendet
-    ----------------------------------------------------- */
+    /* =====================================================
+       Vergleich aktuelle + zukünftige Vorlesungen
+    ===================================================== */
 
     if (
         vergleichAnzeigen
@@ -2008,13 +2549,9 @@ async function baueHauptansicht() {
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        Chronologisch sortieren
-
-       Bei gleichem Datum:
-       eigene Serie zuerst,
-       Vergleich daneben.
-    ----------------------------------------------------- */
+    ===================================================== */
 
     eintraege.sort(
         (a, b) => {
@@ -2037,14 +2574,32 @@ async function baueHauptansicht() {
             }
 
 
+            /*
+                Gleicher Tag:
+
+                eigene Serie zuerst,
+                Vergleich danach.
+            */
+
             return (
-                a.typ === "eigen"
-                ? -1
-                : 1
+                a.typ ===
+                "eigen"
+                ?
+                -1
+                :
+                1
             );
         }
     );
 
+
+    /* =====================================================
+       Tagesblöcke vorbereiten
+
+       Zuerst erzeugen wir ALLE Termine sofort.
+
+       Dadurch bleibt das Seitenlayout stabil.
+    ===================================================== */
 
     const gruppiert =
         gruppiereEintraege(
@@ -2052,9 +2607,9 @@ async function baueHauptansicht() {
         );
 
 
-    /* -----------------------------------------------------
-       Tagesblöcke erzeugen
-    ----------------------------------------------------- */
+    const ladeAuftraege =
+        [];
+
 
     for (
         const [
@@ -2081,31 +2636,10 @@ async function baueHauptansicht() {
         );
 
 
-        /* -------------------------------------------------
-           Vorlesungen dieses Tages laden
-        ------------------------------------------------- */
-
         for (
             const eintrag
             of gruppe
         ) {
-
-            const istNaechste =
-                eintrag.typ === "eigen"
-                &&
-                naechsterEigenerEintrag
-                &&
-                eintrag.datei
-                ===
-                naechsterEigenerEintrag.datei;
-
-
-            /*
-                Zunächst Platzhalter anzeigen.
-
-                So erscheint die Seite sofort,
-                während die JSON-Datei geladen wird.
-            */
 
             const platzhalter =
                 document.createElement(
@@ -2114,11 +2648,12 @@ async function baueHauptansicht() {
 
 
             platzhalter.className =
-                "kurzansicht";
+                "lade-karte";
 
 
             if (
-                eintrag.typ === "vergleich"
+                eintrag.typ ===
+                "vergleich"
             ) {
 
                 platzhalter.classList.add(
@@ -2132,9 +2667,18 @@ async function baueHauptansicht() {
 
 
             platzhalter.textContent =
-                "Vorlesung "
+                (
+                    eintrag.typ ===
+                    "vergleich"
+                    ?
+                    "Vergleichsvorlesung "
+                    :
+                    "Vorlesung "
+                )
                 +
-                eintrag.vorlesungsnummer
+                formatVorlesungsnummer(
+                    eintrag.vorlesungsnummer
+                )
                 +
                 " wird geladen …";
 
@@ -2144,95 +2688,114 @@ async function baueHauptansicht() {
             );
 
 
-            aktualisiereTagGrid(
-                tag
-            );
+            ladeAuftraege.push({
 
+                eintrag:
+                    eintrag,
 
-            try {
+                platzhalter:
+                    platzhalter,
 
-                const daten =
-                    await ladeVorlesungsDatei(
-                        eintrag
-                    );
-
-
-                const voll =
-                    erzeugeVorlesung(
-                        eintrag,
-                        daten,
-                        eintrag.typ,
-                        istNaechste
-                    );
-
-
-                voll.dataset.typ =
-                    eintrag.typ;
-
-
-                platzhalter.replaceWith(
-                    voll
-                );
-
-
-                aktualisiereTagGrid(
+                tag:
                     tag
-                );
-
-
-            } catch (fehler) {
-
-                console.error(
-                    fehler
-                );
-
-
-                /*
-                    Falls das Laden nicht klappt,
-                    Kurzansicht als Fallback.
-                */
-
-                const kurz =
-                    erzeugeKurzansicht(
-                        eintrag,
-                        eintrag.typ
-                    );
-
-
-                platzhalter.replaceWith(
-                    kurz
-                );
-
-
-                aktualisiereTagGrid(
-                    tag
-                );
-            }
-
-
-            /*
-                Dem Browser kurz Gelegenheit zum Zeichnen geben.
-                Dadurch wirkt das Laden bei vielen Vorlesungen
-                etwas flüssiger.
-            */
-
-            await new Promise(
-                resolve =>
-                    requestAnimationFrame(
-                        resolve
-                    )
-            );
+            });
         }
+
+
+        aktualisiereTagGrid(
+            tag
+        );
     }
+
+
+    /* =====================================================
+       Jetzt alle Vorlesungen vollständig laden.
+
+       Promise.all bedeutet:
+
+       Die JSON-Dateien werden parallel angefordert,
+       nicht langsam eine nach der anderen.
+    ===================================================== */
+
+    await Promise.all(
+
+        ladeAuftraege.map(
+
+            async function(auftrag) {
+
+                const eintrag =
+                    auftrag.eintrag;
+
+
+                const istNaechste =
+                    eintrag.typ ===
+                    "eigen"
+                    &&
+                    naechsterEigenerEintrag
+                    &&
+                    eintrag.datei ===
+                    naechsterEigenerEintrag.datei;
+
+
+                try {
+
+                    const daten =
+                        await ladeVorlesungsDatei(
+                            eintrag
+                        );
+
+
+                    const voll =
+                        erzeugeVorlesung(
+                            eintrag,
+                            daten,
+                            eintrag.typ,
+                            istNaechste
+                        );
+
+
+                    voll.dataset.typ =
+                        eintrag.typ;
+
+
+                    auftrag
+                        .platzhalter
+                        .replaceWith(
+                            voll
+                        );
+
+
+                    aktualisiereTagGrid(
+                        auftrag.tag
+                    );
+
+
+                } catch (fehler) {
+
+                    console.error(
+                        fehler
+                    );
+
+
+                    auftrag
+                        .platzhalter
+                        .textContent =
+                            "Vorlesung konnte nicht geladen werden.";
+                }
+            }
+        )
+    );
 }
 
 
 /* =========================================================
    Vergangenheit ein-/ausblenden
 
-   Die früheren Vorlesungen werden nach oben aufgeklappt.
-   Die aktuelle Vorlesung bleibt dabei optisch an derselben
-   Stelle im Browserfenster.
+   Beim Öffnen bleibt die aktuelle Vorlesung an
+   derselben Bildschirmposition.
+
+   Die Vergangenheit wächst dadurch optisch
+   NACH OBEN.
 ========================================================= */
 
 document
@@ -2256,10 +2819,11 @@ document
 
 
             /*
-                Aktuelle / erste sichtbare Vorlesung merken.
+                Ersten aktuellen/zukünftigen Tagesblock
+                als Anker verwenden.
             */
 
-            const ersteAktuelleVorlesung =
+            const anker =
                 document
                     .getElementById(
                         "inhalt"
@@ -2274,11 +2838,11 @@ document
 
 
             if (
-                ersteAktuelleVorlesung
+                anker
             ) {
 
                 altePosition =
-                    ersteAktuelleVorlesung
+                    anker
                         .getBoundingClientRect()
                         .top;
             }
@@ -2293,7 +2857,10 @@ document
             ) {
 
                 /*
-                    Vergangene Vorlesungen erzeugen.
+                    Nur kompakte vergangene Karten erzeugen.
+
+                    Es werden dabei KEINE alten
+                    Vorlesungs-JSON-Dateien geladen.
                 */
 
                 baueVergangenheit();
@@ -2308,7 +2875,6 @@ document
 
                 button.textContent =
                     "↓ Frühere Vorlesungen ausblenden";
-
 
             } else {
 
@@ -2325,17 +2891,17 @@ document
 
 
             /*
-                Nach dem Öffnen/Schliessen muss der Browser
-                zuerst das neue Layout berechnen.
+                Browser das neue Layout berechnen lassen.
             */
 
             requestAnimationFrame(
                 function() {
 
                     if (
-                        !ersteAktuelleVorlesung
+                        !anker
                         ||
-                        altePosition === null
+                        altePosition ===
+                        null
                     ) {
 
                         return;
@@ -2343,18 +2909,18 @@ document
 
 
                     const neuePosition =
-                        ersteAktuelleVorlesung
+                        anker
                             .getBoundingClientRect()
                             .top;
 
 
                     /*
-                        Differenz ausgleichen.
+                        Höhenänderung ausgleichen.
 
-                        Dadurch bleibt die aktuelle Vorlesung
-                        genau dort, wo sie vorher war.
+                        Dadurch bewegt sich die aktuelle
+                        Vorlesung auf dem Bildschirm nicht.
 
-                        Die Vergangenheit erscheint darüber.
+                        Die Vergangenheit erscheint oberhalb.
                     */
 
                     window.scrollBy(
@@ -2368,6 +2934,7 @@ document
         }
     );
 
+
 /* =========================================================
    Start
 ========================================================= */
@@ -2375,6 +2942,30 @@ document
 async function starteSeite() {
 
     try {
+
+        /* -------------------------------------------------
+           Serie prüfen
+        ------------------------------------------------- */
+
+        if (
+            !eigeneSerie
+            ||
+            Number.isNaN(
+                eigeneSerie
+            )
+        ) {
+
+            throw new Error(
+                "Keine gültige Stammvorlesungsserie angegeben."
+            );
+        }
+
+
+        /* -------------------------------------------------
+           Zentralen Index laden
+
+           index.json immer frisch.
+        ------------------------------------------------- */
 
         const antwort =
             await fetch(
@@ -2386,7 +2977,9 @@ async function starteSeite() {
             );
 
 
-        if (!antwort.ok) {
+        if (
+            !antwort.ok
+        ) {
 
             throw new Error(
                 "index.json konnte nicht geladen werden."
@@ -2397,6 +2990,24 @@ async function starteSeite() {
         indexDaten =
             await antwort.json();
 
+
+        if (
+            !indexDaten
+            ||
+            !Array.isArray(
+                indexDaten.vorlesungen
+            )
+        ) {
+
+            throw new Error(
+                "index.json enthält keine gültige Vorlesungsliste."
+            );
+        }
+
+
+        /* -------------------------------------------------
+           Eigene Serie
+        ------------------------------------------------- */
 
         eigeneEintraege =
             indexDaten.vorlesungen
@@ -2421,7 +3032,8 @@ async function starteSeite() {
 
 
         if (
-            eigeneEintraege.length === 0
+            eigeneEintraege.length ===
+            0
         ) {
 
             throw new Error(
@@ -2434,9 +3046,17 @@ async function starteSeite() {
         }
 
 
+        /* -------------------------------------------------
+           Vergleichsserie bestimmen
+        ------------------------------------------------- */
+
         vergleichsSerie =
             bestimmeVergleichsSerie();
 
+
+        /* -------------------------------------------------
+           Vergangenheit / Zukunft aufteilen
+        ------------------------------------------------- */
 
         const heute =
             heuteOhneUhrzeit();
@@ -2464,6 +3084,10 @@ async function starteSeite() {
             );
 
 
+        /* -------------------------------------------------
+           Nächste Vorlesung
+        ------------------------------------------------- */
+
         naechsterEigenerEintrag =
             zukunftEigene[0]
             ||
@@ -2471,8 +3095,12 @@ async function starteSeite() {
 
 
         /*
-            Falls alle Vorlesungen vorbei sind:
-            letzte Vorlesung als Einstieg verwenden.
+            Sonderfall:
+
+            Das ganze Semester ist bereits vorbei.
+
+            Dann verwenden wir die letzte Vorlesung
+            als Einstieg.
         */
 
         if (
@@ -2481,8 +3109,24 @@ async function starteSeite() {
 
             naechsterEigenerEintrag =
                 eigeneEintraege[
-                    eigeneEintraege.length - 1
+                    eigeneEintraege.length
+                    -
+                    1
                 ];
+
+
+            /*
+                Diese Vorlesung soll nicht gleichzeitig
+                oben in der Vergangenheit UND unten
+                vollständig erscheinen.
+            */
+
+            vergangeneEigene =
+                vergangeneEigene.filter(
+                    eintrag =>
+                        eintrag.datei !==
+                        naechsterEigenerEintrag.datei
+                );
 
 
             zukunftEigene =
@@ -2491,6 +3135,13 @@ async function starteSeite() {
                 ];
         }
 
+
+        /* -------------------------------------------------
+           Hauptansicht
+
+           ALLE aktuellen und zukünftigen Vorlesungen
+           werden vollständig geladen.
+        ------------------------------------------------- */
 
         await baueHauptansicht();
 
@@ -2505,13 +3156,14 @@ async function starteSeite() {
                 eigeneSerie;
 
 
-        /*
-            Falls gar keine Vergangenheit existiert,
-            Button verstecken.
-        */
+        /* -------------------------------------------------
+           Vergangenheit-Button nur anzeigen,
+           wenn es auch frühere Vorlesungen gibt.
+        ------------------------------------------------- */
 
         if (
-            vergangeneEigene.length === 0
+            vergangeneEigene.length ===
+            0
         ) {
 
             document
@@ -2521,6 +3173,7 @@ async function starteSeite() {
                 .style.display =
                     "none";
         }
+
 
     } catch (fehler) {
 
@@ -2547,7 +3200,12 @@ async function starteSeite() {
 }
 
 
+/* =========================================================
+   Los
+========================================================= */
+
 starteSeite();
+
 
 </script>
 
