@@ -433,10 +433,7 @@ const parameter =
         window.location.search
     );
 
-eigeneSerie =
-    Number(
-        parameter.get("serie")
-    );
+eigeneSerie = 2;
 
 
 /* =========================================================
@@ -461,11 +458,8 @@ function heuteOhneUhrzeit() {
     const jetzt =
         new Date();
 
-    return new Date(
-        jetzt.getFullYear(),
-        jetzt.getMonth(),
-        jetzt.getDate()
-    );
+    // TESTDATUM: 09.05.2026
+    return new Date(2026, 4, 9);
 }
 
 
