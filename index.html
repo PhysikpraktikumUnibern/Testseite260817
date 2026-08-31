@@ -2,6 +2,7 @@
 <html lang="de">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -28,7 +29,7 @@ h1 {
 
 #status {
     color: #666;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 }
 
 #fehler {
@@ -39,11 +40,11 @@ h1 {
 
 
 /* =========================================================
-   Tagesblock
+   Tagesblöcke
 ========================================================= */
 
 .tag {
-    margin-bottom: 38px;
+    margin-bottom: 34px;
     scroll-margin-top: 25px;
 }
 
@@ -65,7 +66,7 @@ h1 {
 
 
 /* =========================================================
-   Vorlesung
+   Vorlesungen
 ========================================================= */
 
 .vorlesung {
@@ -92,13 +93,17 @@ h1 {
 }
 
 .vorlesung.vergangen {
-    opacity: 0.76;
+    opacity: 0.82;
 }
 
 .vorlesung.naechste {
     box-shadow: 0 0 0 4px rgba(64, 93, 111, 0.18);
 }
 
+
+/* =========================================================
+   Vorlesungskopf
+========================================================= */
 
 .vorlesung-kopf {
     padding: 15px 18px;
@@ -107,7 +112,7 @@ h1 {
 
 .vorlesung-kopf-zeile {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 18px;
 }
@@ -117,9 +122,20 @@ h1 {
 }
 
 .vorlesung-kopf h2 {
-    margin: 0 0 7px 0;
+    margin: 0 0 8px 0;
 }
 
+.vorlesung-aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+
+/* =========================================================
+   Kennzeichnungen
+========================================================= */
 
 .serien-hinweis {
     display: inline-block;
@@ -152,23 +168,94 @@ h1 {
 
 
 /* =========================================================
-   Vergleichsbutton IM Vorlesungskopf
+   Buttons
 ========================================================= */
 
-.vergleich-button {
-    flex-shrink: 0;
-    padding: 9px 13px;
+.aktion-button,
+.mail-button {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 9px 12px;
     border-radius: 7px;
-    border: 1px solid #405d6f;
     background: white;
-    color: #405d6f;
-    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
     font-size: 13px;
     font-weight: bold;
+    cursor: pointer;
 }
 
-.vergleich-button:hover {
+.aktion-button {
+    border: 1px solid #405d6f;
+    color: #405d6f;
+}
+
+.aktion-button:hover {
     background: #dfeaf0;
+}
+
+.mail-button {
+    border: 1px solid #70808a;
+    color: #405d6f;
+}
+
+.mail-button:hover {
+    background: #e7eef2;
+}
+
+
+/* =========================================================
+   Vergangene Vorlesung – Kurzansicht
+========================================================= */
+
+.vergangen-kurz {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 14px 18px;
+
+    background: white;
+    border: 1px solid #bfc7cc;
+    border-radius: 9px;
+
+    color: #5f6a71;
+}
+
+.vergangen-kurz.vergleich {
+    border-color: #d0a36c;
+    background: #fffaf4;
+}
+
+.vergangen-kurz-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.vergangen-kurz-titel {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.vergangen-kurz-aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+/* =========================================================
+   Ladeplatzhalter
+========================================================= */
+
+.lade-karte {
+    padding: 18px;
+    background: white;
+    border: 1px solid #ccd2d6;
+    border-radius: 10px;
+    color: #777;
 }
 
 
@@ -234,7 +321,7 @@ h1 {
 
 
 /* =========================================================
-   Details
+   Versuchsdetails
 ========================================================= */
 
 .versuch-detail {
@@ -259,11 +346,14 @@ h1 {
     max-width: 500px;
     max-height: 340px;
     object-fit: contain;
+
+    display: block;
+
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
+
     cursor: zoom-in;
-    display: block;
 }
 
 .versuch-thumbnail:hover {
@@ -281,22 +371,13 @@ h1 {
     white-space: pre-wrap;
 }
 
+.versuch-mail {
+    margin-top: 18px;
+}
+
 .kein-bild {
     color: #777;
     font-style: italic;
-}
-
-
-/* =========================================================
-   Frühere Vorlesungen
-========================================================= */
-
-#vergangenSentinel {
-    padding: 15px;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #777;
-    font-size: 13px;
 }
 
 
@@ -306,12 +387,17 @@ h1 {
 
 #lightbox {
     display: none;
+
     position: fixed;
     inset: 0;
+
     z-index: 10000;
+
     background: rgba(0, 0, 0, 0.88);
+
     align-items: center;
     justify-content: center;
+
     padding: 30px;
     box-sizing: border-box;
 }
@@ -324,16 +410,23 @@ h1 {
     max-width: 95vw;
     max-height: 92vh;
     object-fit: contain;
+
     background: white;
+
+    box-shadow:
+        0 0 25px
+        rgba(0, 0, 0, 0.5);
 }
 
 #lightboxSchliessen {
     position: fixed;
     top: 15px;
     right: 22px;
+
     border: 0;
     background: transparent;
     color: white;
+
     font-size: 38px;
     cursor: pointer;
 }
@@ -353,17 +446,25 @@ h1 {
         grid-template-columns: 1fr;
     }
 
-    .vorlesung-kopf-zeile {
-        align-items: flex-start;
+    .vorlesung-kopf-zeile,
+    .vergangen-kurz {
         flex-direction: column;
+        align-items: stretch;
+    }
+
+    .vorlesung-aktionen,
+    .vergangen-kurz-aktionen {
+        justify-content: flex-start;
     }
 }
 
 </style>
+
 </head>
 
 
 <body>
+
 
 <h1>Vorlesungsplanung</h1>
 
@@ -373,23 +474,25 @@ h1 {
 
 <div id="fehler"></div>
 
-
-<div id="vergangenSentinel">
-    Frühere Vorlesungen werden beim Hochscrollen geladen.
-</div>
-
 <div id="inhalt"></div>
 
 
+<!-- ======================================================
+     Lightbox
+======================================================= -->
+
 <div id="lightbox">
 
-    <button id="lightboxSchliessen">
+    <button
+        id="lightboxSchliessen"
+        aria-label="Bild schliessen">
         ×
     </button>
 
-    <img id="lightboxBild"
-         src=""
-         alt="Versuchsbild">
+    <img
+        id="lightboxBild"
+        src=""
+        alt="Versuchsbild">
 
 </div>
 
@@ -398,42 +501,94 @@ h1 {
 
 
 /* =========================================================
-   Globale Variablen
+   KONFIGURATION
 ========================================================= */
 
-let indexDaten;
-
-let eigeneSerie;
-let vergleichsSerie = null;
-
-let eigeneEintraege = [];
-let vergangeneEintraege = [];
-let zukuenftigeEintraege = [];
-
-let vergleichAnzeigen = false;
-let vergangenGeladen = false;
-
-let naechsterEigenerEintrag = null;
-let naechstesElement = null;
+const MAIL_ADRESSE =
+    "pi-demo.space@unibe.ch";
 
 
 /*
-    Bereits geladene JSON-Dateien
-    bleiben im Speicher.
+    TESTMODUS
+
+    Derzeit:
+    Stammvorlesungsserie 2
+    Datum 09.05.2026
+
+    Für den späteren Produktivbetrieb:
+
+    TEST_SERIE = null;
+    TEST_DATUM = null;
 */
-const datenCache = new Map();
+
+const TEST_SERIE = 2;
+
+const TEST_DATUM =
+    new Date(
+        2026,
+        4,
+        9
+    );
 
 
 /* =========================================================
-   Serie aus URL
+   Globale Daten
 ========================================================= */
 
-const parameter =
+let indexDaten = null;
+
+let eigeneSerie = null;
+
+let vergleichsSerie = null;
+
+let vergleichAnzeigen =
+    false;
+
+let eigeneEintraege =
+    [];
+
+let vergleichsEintraege =
+    [];
+
+let naechsterEigenerEintrag =
+    null;
+
+
+/*
+    Bereits geladene Vorlesungsdateien
+    werden hier gespeichert.
+*/
+
+const datenCache =
+    new Map();
+
+
+/* =========================================================
+   Stammserie bestimmen
+========================================================= */
+
+const urlParameter =
     new URLSearchParams(
         window.location.search
     );
 
-eigeneSerie = 2;
+
+if (
+    TEST_SERIE !== null
+) {
+
+    eigeneSerie =
+        TEST_SERIE;
+
+} else {
+
+    eigeneSerie =
+        Number(
+            urlParameter.get(
+                "serie"
+            )
+        );
+}
 
 
 /* =========================================================
@@ -442,8 +597,19 @@ eigeneSerie = 2;
 
 function datumAusDeutsch(text) {
 
+    if (!text) {
+        return null;
+    }
+
     const teile =
         text.split(".");
+
+    if (
+        teile.length !== 3
+    ) {
+
+        return null;
+    }
 
     return new Date(
         Number(teile[2]),
@@ -455,23 +621,66 @@ function datumAusDeutsch(text) {
 
 function heuteOhneUhrzeit() {
 
+    if (
+        TEST_DATUM !== null
+    ) {
+
+        return new Date(
+            TEST_DATUM.getFullYear(),
+            TEST_DATUM.getMonth(),
+            TEST_DATUM.getDate()
+        );
+    }
+
+
     const jetzt =
         new Date();
 
-    // TESTDATUM: 09.05.2026
-    return new Date(2026, 4, 9);
+
+    return new Date(
+        jetzt.getFullYear(),
+        jetzt.getMonth(),
+        jetzt.getDate()
+    );
 }
 
 
 /* =========================================================
-   JSON-Datei laden
-
-   KEIN no-store mehr!
-
-   Der Browser darf Vorlesungsdateien cachen.
+   Mail
 ========================================================= */
 
-async function ladeVorlesungsDatei(eintrag) {
+function mailLink(
+    betreff,
+    text = ""
+) {
+
+    return (
+        "mailto:"
+        +
+        MAIL_ADRESSE
+        +
+        "?subject="
+        +
+        encodeURIComponent(
+            betreff
+        )
+        +
+        "&body="
+        +
+        encodeURIComponent(
+            text
+        )
+    );
+}
+
+
+/* =========================================================
+   Vorlesungsdatei laden
+========================================================= */
+
+async function ladeVorlesungsDatei(
+    eintrag
+) {
 
     if (
         datenCache.has(
@@ -485,17 +694,25 @@ async function ladeVorlesungsDatei(eintrag) {
     }
 
 
+    /*
+        Vorlesungsdateien dürfen
+        vom Browser gecacht werden.
+    */
+
     const antwort =
         await fetch(
             eintrag.datei
         );
 
 
-    if (!antwort.ok) {
+    if (
+        !antwort.ok
+    ) {
 
         throw new Error(
             "Vorlesungsdatei konnte nicht geladen werden: "
-            + eintrag.datei
+            +
+            eintrag.datei
         );
     }
 
@@ -526,9 +743,11 @@ function bestimmeVergleichsSerie() {
     ) {
 
         if (
-            eintrag.vergleichsserie !== undefined
+            eintrag.vergleichsserie
+                !== undefined
             &&
-            eintrag.vergleichsserie !== null
+            eintrag.vergleichsserie
+                !== null
             &&
             Number(
                 eintrag.vergleichsserie
@@ -540,6 +759,7 @@ function bestimmeVergleichsSerie() {
             );
         }
     }
+
 
     return null;
 }
@@ -554,15 +774,27 @@ function oeffneLightbox(
     altText
 ) {
 
+    if (!bildPfad) {
+        return;
+    }
+
+
     const lightbox =
         document.getElementById(
             "lightbox"
         );
 
+
     const bild =
         document.getElementById(
             "lightboxBild"
         );
+
+
+    /*
+        Erst jetzt wird das
+        grosse Bild geladen.
+    */
 
     bild.src =
         bildPfad;
@@ -570,9 +802,11 @@ function oeffneLightbox(
     bild.alt =
         altText || "";
 
+
     lightbox.classList.add(
         "aktiv"
     );
+
 
     document.body.style.overflow =
         "hidden";
@@ -652,7 +886,11 @@ document.addEventListener(
    Versuch
 ========================================================= */
 
-function erzeugeVersuch(versuch) {
+function erzeugeVersuch(
+    versuch,
+    eintrag,
+    vorlesungsDaten
+) {
 
     const element =
         document.createElement(
@@ -662,6 +900,10 @@ function erzeugeVersuch(versuch) {
     element.className =
         "versuch";
 
+
+    /* -----------------------------------------------------
+       Kopf
+    ----------------------------------------------------- */
 
     const kopf =
         document.createElement(
@@ -721,6 +963,10 @@ function erzeugeVersuch(versuch) {
     );
 
 
+    /* -----------------------------------------------------
+       Details
+    ----------------------------------------------------- */
+
     const detail =
         document.createElement(
             "div"
@@ -729,6 +975,10 @@ function erzeugeVersuch(versuch) {
     detail.className =
         "versuch-detail";
 
+
+    /* -----------------------------------------------------
+       Bild
+    ----------------------------------------------------- */
 
     const bildBereich =
         document.createElement(
@@ -756,9 +1006,10 @@ function erzeugeVersuch(versuch) {
 
 
         /*
-            Thumbnail zuerst.
-            Fallback auf Original,
-            falls ältere JSON-Datei.
+            Thumbnail verwenden.
+
+            Ältere JSON-Dateien:
+            Fallback auf grosses Bild.
         */
 
         thumbnail.src =
@@ -767,20 +1018,18 @@ function erzeugeVersuch(versuch) {
             versuch.bild;
 
 
-        /*
-            Erst laden, wenn Browser
-            das Bild wirklich braucht.
-        */
-
         thumbnail.loading =
             "lazy";
+
 
         thumbnail.decoding =
             "async";
 
 
         thumbnail.alt =
-            versuch.versuch || "";
+            versuch.versuch
+            ||
+            "Versuchsbild";
 
 
         thumbnail.addEventListener(
@@ -789,10 +1038,6 @@ function erzeugeVersuch(versuch) {
 
                 event.stopPropagation();
 
-                /*
-                    ERST JETZT wird
-                    das grosse Bild geladen.
-                */
 
                 oeffneLightbox(
                     versuch.bild,
@@ -843,6 +1088,16 @@ function erzeugeVersuch(versuch) {
     }
 
 
+    /* -----------------------------------------------------
+       Beschreibung + Mail
+    ----------------------------------------------------- */
+
+    const textBereich =
+        document.createElement(
+            "div"
+        );
+
+
     const text =
         document.createElement(
             "div"
@@ -857,12 +1112,91 @@ function erzeugeVersuch(versuch) {
         "Keine Beschreibung vorhanden.";
 
 
+    textBereich.appendChild(
+        text
+    );
+
+
+    const mailBereich =
+        document.createElement(
+            "div"
+        );
+
+    mailBereich.className =
+        "versuch-mail";
+
+
+    const frageButton =
+        document.createElement(
+            "a"
+        );
+
+    frageButton.className =
+        "mail-button";
+
+
+    frageButton.textContent =
+        "✉ Frage zum Versuch";
+
+
+    frageButton.href =
+        mailLink(
+
+            "Frage zum Versuch: "
+            +
+            (
+                versuch.versuch
+                || ""
+            ),
+
+            "Ich habe eine Frage zum Versuch „"
+            +
+            (
+                versuch.versuch
+                || ""
+            )
+            +
+            "“.\n\n"
+            +
+            "Vorlesung: "
+            +
+            vorlesungsDaten.vorlesung
+            +
+            "\n"
+            +
+            "Datum: "
+            +
+            eintrag.datum
+            +
+            "\n\n"
+        );
+
+
+    frageButton.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+        }
+    );
+
+
+    mailBereich.appendChild(
+        frageButton
+    );
+
+
+    textBereich.appendChild(
+        mailBereich
+    );
+
+
     detail.appendChild(
         bildBereich
     );
 
     detail.appendChild(
-        text
+        textBereich
     );
 
 
@@ -875,6 +1209,10 @@ function erzeugeVersuch(versuch) {
     );
 
 
+    /* -----------------------------------------------------
+       Öffnen / Schliessen
+    ----------------------------------------------------- */
+
     element.addEventListener(
         "click",
         function() {
@@ -886,6 +1224,7 @@ function erzeugeVersuch(versuch) {
                         "aktiv"
                     );
 
+
             pfeil.textContent =
                 aktiv
                 ? "▴"
@@ -895,6 +1234,65 @@ function erzeugeVersuch(versuch) {
 
 
     return element;
+}
+
+
+/* =========================================================
+   Vorlesungs-Mailbutton
+========================================================= */
+
+function erzeugeVorlesungsMailbutton(
+    eintrag,
+    vorlesungsnummer
+) {
+
+    const mail =
+        document.createElement(
+            "a"
+        );
+
+
+    mail.className =
+        "mail-button";
+
+
+    mail.textContent =
+        "✉ Frage zur Vorlesung";
+
+
+    mail.href =
+        mailLink(
+
+            "Frage zur Vorlesung "
+            +
+            vorlesungsnummer
+            +
+            " vom "
+            +
+            eintrag.datum,
+
+            "Ich habe eine Frage zur Vorlesung "
+            +
+            vorlesungsnummer
+            +
+            " vom "
+            +
+            eintrag.datum
+            +
+            ".\n\n"
+        );
+
+
+    mail.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+        }
+    );
+
+
+    return mail;
 }
 
 
@@ -914,19 +1312,42 @@ async function vergleichUmschalten() {
         )
         .textContent =
             vergleichAnzeigen
-            ? "Vergleich wird geladen …"
-            : "Vergleich wird ausgeblendet …";
+            ?
+            "Vergleich wird geladen …"
+            :
+            "Vergleich wird ausgeblendet …";
 
 
-    /*
-        Vergleich ist bewusst ein
-        expliziter Vorgang.
+    if (
+        vergleichAnzeigen
+        &&
+        vergleichsSerie !== null
+    ) {
 
-        Erst beim Klick werden diese
-        zusätzlichen JSON-Dateien geladen.
-    */
+        vergleichsEintraege =
+            indexDaten.vorlesungen
+                .filter(
+                    eintrag =>
+                        Number(
+                            eintrag.stammserie
+                        )
+                        ===
+                        vergleichsSerie
+                )
+                .sort(
+                    (a, b) =>
+                        datumAusDeutsch(
+                            a.datum
+                        )
+                        -
+                        datumAusDeutsch(
+                            b.datum
+                        )
+                );
+    }
 
-    await zeichneKompletteAnsicht();
+
+    await baueAnsicht();
 
 
     document
@@ -935,12 +1356,60 @@ async function vergleichUmschalten() {
         )
         .textContent =
             "Stammvorlesungsserie "
-            + eigeneSerie;
+            +
+            eigeneSerie;
 }
 
 
 /* =========================================================
-   Vorlesungskarte
+   Vergleichsbutton
+========================================================= */
+
+function erzeugeVergleichsButton() {
+
+    if (
+        vergleichsSerie === null
+    ) {
+
+        return null;
+    }
+
+
+    const button =
+        document.createElement(
+            "button"
+        );
+
+
+    button.className =
+        "aktion-button";
+
+
+    button.textContent =
+        vergleichAnzeigen
+        ?
+        "Vergleich ausblenden"
+        :
+        "Vergleich einblenden";
+
+
+    button.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+            vergleichUmschalten();
+        }
+    );
+
+
+    return button;
+}
+
+
+/* =========================================================
+   Vollständige Vorlesung erzeugen
 ========================================================= */
 
 function erzeugeVorlesung(
@@ -962,7 +1431,8 @@ function erzeugeVorlesung(
 
     element.className =
         "vorlesung "
-        + typ;
+        +
+        typ;
 
 
     if (
@@ -986,6 +1456,10 @@ function erzeugeVorlesung(
         );
     }
 
+
+    /* -----------------------------------------------------
+       Kopf
+    ----------------------------------------------------- */
 
     const kopf =
         document.createElement(
@@ -1021,7 +1495,8 @@ function erzeugeVorlesung(
 
     titel.textContent =
         "Vorlesung "
-        + daten.vorlesung;
+        +
+        daten.vorlesung;
 
 
     const hinweis =
@@ -1031,13 +1506,16 @@ function erzeugeVorlesung(
 
     hinweis.className =
         "serien-hinweis "
-        + typ;
+        +
+        typ;
 
 
     hinweis.textContent =
         typ === "eigen"
-        ? "Ihre Vorlesungsserie"
-        : "Vergleichsserie";
+        ?
+        "Ihre Vorlesungsserie"
+        :
+        "Vergleichsserie";
 
 
     titelBereich.appendChild(
@@ -1074,56 +1552,69 @@ function erzeugeVorlesung(
     );
 
 
-    /* ------------------------------------------------------
-       Vergleichsbutton DIREKT IN DER VORLESUNG
-    ------------------------------------------------------ */
+    /* -----------------------------------------------------
+       Aktionen
+    ----------------------------------------------------- */
+
+    const aktionen =
+        document.createElement(
+            "div"
+        );
+
+    aktionen.className =
+        "vorlesung-aktionen";
+
+
+    aktionen.appendChild(
+        erzeugeVorlesungsMailbutton(
+            eintrag,
+            daten.vorlesung
+        )
+    );
+
+
+    /*
+        Vergleichsbutton nur auf
+        der eigenen Serie.
+    */
 
     if (
         typ === "eigen"
-        &&
-        vergleichsSerie !== null
     ) {
 
-        const button =
-            document.createElement(
-                "button"
+        const vergleichButton =
+            erzeugeVergleichsButton();
+
+
+        if (
+            vergleichButton
+        ) {
+
+            aktionen.appendChild(
+                vergleichButton
             );
-
-        button.className =
-            "vergleich-button";
-
-
-        button.textContent =
-            vergleichAnzeigen
-            ? "Vergleich ausblenden"
-            : "Vergleich einblenden";
-
-
-        button.addEventListener(
-            "click",
-            function(event) {
-
-                event.stopPropagation();
-
-                vergleichUmschalten();
-            }
-        );
-
-
-        kopfZeile.appendChild(
-            button
-        );
+        }
     }
+
+
+    kopfZeile.appendChild(
+        aktionen
+    );
 
 
     kopf.appendChild(
         kopfZeile
     );
 
+
     element.appendChild(
         kopf
     );
 
+
+    /* -----------------------------------------------------
+       Lektionen
+    ----------------------------------------------------- */
 
     for (
         const lektion
@@ -1139,18 +1630,19 @@ function erzeugeVorlesung(
             "lektion";
 
 
-        const titel =
+        const lektionTitel =
             document.createElement(
                 "h3"
             );
 
-        titel.textContent =
+        lektionTitel.textContent =
             "Lektion "
-            + lektion.lektion;
+            +
+            lektion.lektion;
 
 
         lektionsElement.appendChild(
-            titel
+            lektionTitel
         );
 
 
@@ -1160,9 +1652,13 @@ function erzeugeVorlesung(
         ) {
 
             lektionsElement.appendChild(
+
                 erzeugeVersuch(
-                    versuch
+                    versuch,
+                    eintrag,
+                    daten
                 )
+
             );
         }
 
@@ -1178,20 +1674,264 @@ function erzeugeVorlesung(
 
 
 /* =========================================================
-   Einen einzelnen Tagesblock erzeugen
+   Vergangene Vorlesung kompakt
 ========================================================= */
 
-async function erzeugeTag(
-    eintraege
+function erzeugeVergangeneKurzansicht(
+    eintrag,
+    typ
 ) {
 
-    const tag =
+    const element =
+        document.createElement(
+            "div"
+        );
+
+
+    element.className =
+        "vergangen-kurz";
+
+
+    if (
+        typ === "vergleich"
+    ) {
+
+        element.classList.add(
+            "vergleich"
+        );
+    }
+
+
+    const info =
+        document.createElement(
+            "div"
+        );
+
+    info.className =
+        "vergangen-kurz-info";
+
+
+    const titel =
+        document.createElement(
+            "div"
+        );
+
+    titel.className =
+        "vergangen-kurz-titel";
+
+
+    titel.textContent =
+        "Vorlesung "
+        +
+        eintrag.vorlesungsnummer;
+
+
+    const serie =
+        document.createElement(
+            "span"
+        );
+
+    serie.className =
+        "serien-hinweis "
+        +
+        typ;
+
+
+    serie.textContent =
+        typ === "eigen"
+        ?
+        "Ihre Vorlesungsserie"
+        :
+        "Vergleichsserie";
+
+
+    info.appendChild(
+        titel
+    );
+
+    info.appendChild(
+        serie
+    );
+
+
+    const aktionen =
+        document.createElement(
+            "div"
+        );
+
+    aktionen.className =
+        "vergangen-kurz-aktionen";
+
+
+    /* -----------------------------------------------------
+       Anzeigen
+    ----------------------------------------------------- */
+
+    const anzeigen =
+        document.createElement(
+            "button"
+        );
+
+
+    anzeigen.className =
+        "aktion-button";
+
+
+    anzeigen.textContent =
+        "Vorlesung anzeigen";
+
+
+    anzeigen.addEventListener(
+        "click",
+        async function(event) {
+
+            event.stopPropagation();
+
+
+            anzeigen.disabled =
+                true;
+
+
+            anzeigen.textContent =
+                "Wird geladen …";
+
+
+            try {
+
+                const daten =
+                    await ladeVorlesungsDatei(
+                        eintrag
+                    );
+
+
+                const voll =
+                    erzeugeVorlesung(
+                        eintrag,
+                        daten,
+                        typ,
+                        false
+                    );
+
+
+                element.replaceWith(
+                    voll
+                );
+
+            } catch (fehler) {
+
+                anzeigen.disabled =
+                    false;
+
+
+                anzeigen.textContent =
+                    "Erneut versuchen";
+
+
+                console.error(
+                    fehler
+                );
+            }
+        }
+    );
+
+
+    aktionen.appendChild(
+        anzeigen
+    );
+
+
+    /* -----------------------------------------------------
+       Mail
+    ----------------------------------------------------- */
+
+    aktionen.appendChild(
+        erzeugeVorlesungsMailbutton(
+            eintrag,
+            eintrag.vorlesungsnummer
+        )
+    );
+
+
+    /* -----------------------------------------------------
+       Vergleich
+    ----------------------------------------------------- */
+
+    if (
+        typ === "eigen"
+    ) {
+
+        const vergleichButton =
+            erzeugeVergleichsButton();
+
+
+        if (
+            vergleichButton
+        ) {
+
+            aktionen.appendChild(
+                vergleichButton
+            );
+        }
+    }
+
+
+    element.appendChild(
+        info
+    );
+
+    element.appendChild(
+        aktionen
+    );
+
+
+    return element;
+}
+
+
+/* =========================================================
+   Tagesblock erstellen
+========================================================= */
+
+function holeOderErzeugeTag(
+    datumText
+) {
+
+    const container =
+        document.getElementById(
+            "inhalt"
+        );
+
+
+    let tag =
+        container.querySelector(
+            '[data-datum="'
+            +
+            datumText
+            +
+            '"]'
+        );
+
+
+    if (
+        tag
+    ) {
+
+        return tag;
+    }
+
+
+    tag =
         document.createElement(
             "section"
         );
 
+
     tag.className =
         "tag";
+
+
+    tag.dataset.datum =
+        datumText;
 
 
     const datumTitel =
@@ -1199,11 +1939,13 @@ async function erzeugeTag(
             "div"
         );
 
+
     datumTitel.className =
         "tag-datum";
 
+
     datumTitel.textContent =
-        eintraege[0].datum;
+        datumText;
 
 
     const grid =
@@ -1211,80 +1953,9 @@ async function erzeugeTag(
             "div"
         );
 
+
     grid.className =
         "tag-grid";
-
-
-    if (
-        eintraege.some(
-            e => e.typ === "eigen"
-        )
-        &&
-        eintraege.some(
-            e => e.typ === "vergleich"
-        )
-    ) {
-
-        grid.classList.add(
-            "zwei"
-        );
-    }
-
-
-    /*
-        Dateien desselben Datums
-        parallel laden.
-    */
-
-    const daten =
-        await Promise.all(
-
-            eintraege.map(
-                ladeVorlesungsDatei
-            )
-        );
-
-
-    for (
-        let i = 0;
-        i < eintraege.length;
-        i++
-    ) {
-
-        const eintrag =
-            eintraege[i];
-
-
-        const istNaechste =
-            eintrag.typ === "eigen"
-            &&
-            naechsterEigenerEintrag
-            &&
-            eintrag.datei
-            ===
-            naechsterEigenerEintrag.datei;
-
-
-        const vorlesung =
-            erzeugeVorlesung(
-                eintrag,
-                daten[i],
-                eintrag.typ,
-                istNaechste
-            );
-
-
-        if (istNaechste) {
-
-            naechstesElement =
-                vorlesung;
-        }
-
-
-        grid.appendChild(
-            vorlesung
-        );
-    }
 
 
     tag.appendChild(
@@ -1296,62 +1967,205 @@ async function erzeugeTag(
     );
 
 
+    /*
+        Richtige chronologische
+        Position finden.
+    */
+
+    const vorhandeneTage =
+        Array.from(
+            container.querySelectorAll(
+                ".tag"
+            )
+        );
+
+
+    const datumNeu =
+        datumAusDeutsch(
+            datumText
+        );
+
+
+    let eingefuegt =
+        false;
+
+
+    for (
+        const vorhandenerTag
+        of vorhandeneTage
+    ) {
+
+        const datumVorhanden =
+            datumAusDeutsch(
+                vorhandenerTag.dataset.datum
+            );
+
+
+        if (
+            datumNeu
+            <
+            datumVorhanden
+        ) {
+
+            container.insertBefore(
+                tag,
+                vorhandenerTag
+            );
+
+
+            eingefuegt =
+                true;
+
+
+            break;
+        }
+    }
+
+
+    if (
+        !eingefuegt
+    ) {
+
+        container.appendChild(
+            tag
+        );
+    }
+
+
     return tag;
 }
 
 
 /* =========================================================
-   Einträge nach Datum gruppieren
+   Karte in Tagesblock einsetzen
 ========================================================= */
 
-function gruppiereNachDatum(
-    eintraege
+function fuegeKarteEin(
+    eintrag,
+    typ,
+    karte
 ) {
 
-    const map =
-        new Map();
+    const tag =
+        holeOderErzeugeTag(
+            eintrag.datum
+        );
 
 
-    for (
-        const eintrag
-        of eintraege
+    const grid =
+        tag.querySelector(
+            ".tag-grid"
+        );
+
+
+    karte.dataset.typ =
+        typ;
+
+
+    /*
+        Eigene Serie soll links,
+        Vergleich rechts stehen.
+    */
+
+    if (
+        typ === "eigen"
     ) {
 
+        const vergleich =
+            grid.querySelector(
+                '[data-typ="vergleich"]'
+            );
+
+
         if (
-            !map.has(
-                eintrag.datum
-            )
+            vergleich
         ) {
 
-            map.set(
-                eintrag.datum,
-                []
+            grid.insertBefore(
+                karte,
+                vergleich
+            );
+
+        } else {
+
+            grid.appendChild(
+                karte
             );
         }
 
+    } else {
 
-        map
-            .get(
-                eintrag.datum
-            )
-            .push(
-                eintrag
-            );
+        grid.appendChild(
+            karte
+        );
     }
 
 
-    return map;
+    const hatEigen =
+        grid.querySelector(
+            '[data-typ="eigen"]'
+        );
+
+
+    const hatVergleich =
+        grid.querySelector(
+            '[data-typ="vergleich"]'
+        );
+
+
+    if (
+        hatEigen
+        &&
+        hatVergleich
+    ) {
+
+        grid.classList.add(
+            "zwei"
+        );
+
+    } else {
+
+        grid.classList.remove(
+            "zwei"
+        );
+    }
 }
 
 
 /* =========================================================
-   Schneller Start
-
-   1. nächste Vorlesung
-   2. Zukunft im Hintergrund
+   Zukünftige Vorlesung laden
 ========================================================= */
 
-async function starteSchnellansicht() {
+async function ladeVolleKarte(
+    eintrag,
+    typ,
+    istNaechste
+) {
+
+    const daten =
+        await ladeVorlesungsDatei(
+            eintrag
+        );
+
+
+    const karte =
+        erzeugeVorlesung(
+            eintrag,
+            daten,
+            typ,
+            istNaechste
+        );
+
+
+    return karte;
+}
+
+
+/* =========================================================
+   Ansicht komplett aufbauen
+========================================================= */
+
+async function baueAnsicht() {
 
     const container =
         document.getElementById(
@@ -1363,89 +2177,340 @@ async function starteSchnellansicht() {
         "";
 
 
-    /*
-        Nächste Vorlesung SOFORT
-    */
-
-    if (
-        naechsterEigenerEintrag
-    ) {
-
-        const tag =
-            await erzeugeTag([
-                {
-                    ...naechsterEigenerEintrag,
-                    typ: "eigen"
-                }
-            ]);
+    const heute =
+        heuteOhneUhrzeit();
 
 
-        container.appendChild(
-            tag
-        );
+    /* =====================================================
+       1. VERGANGENE EIGENE VORLESUNGEN
 
+       Nur kompakte Karten.
+       Keine JSON-Datei laden.
+    ===================================================== */
 
-        if (
-            naechstesElement
-        ) {
-
-            naechstesElement
-                .scrollIntoView({
-                    behavior: "auto",
-                    block: "start"
-                });
-        }
-    }
-
-
-    document
-        .getElementById(
-            "status"
-        )
-        .textContent =
-            "Stammvorlesungsserie "
-            + eigeneSerie;
-
-
-    /*
-        Restliche Zukunft danach
-        im Hintergrund.
-    */
-
-    const rest =
-        zukuenftigeEintraege.filter(
-
+    const vergangeneEigene =
+        eigeneEintraege.filter(
             eintrag =>
-                !naechsterEigenerEintrag
-                ||
-                eintrag.datei
-                !==
-                naechsterEigenerEintrag.datei
+                datumAusDeutsch(
+                    eintrag.datum
+                )
+                <
+                heute
         );
 
 
     for (
         const eintrag
-        of rest
+        of vergangeneEigene
     ) {
 
-        const tag =
-            await erzeugeTag([
-                {
-                    ...eintrag,
-                    typ: "eigen"
-                }
-            ]);
+        const kurz =
+            erzeugeVergangeneKurzansicht(
+                eintrag,
+                "eigen"
+            );
 
 
-        container.appendChild(
-            tag
+        fuegeKarteEin(
+            eintrag,
+            "eigen",
+            kurz
+        );
+    }
+
+
+    /* =====================================================
+       2. VERGANGENE VERGLEICHSVORLESUNGEN
+
+       Ebenfalls nur kompakt.
+    ===================================================== */
+
+    if (
+        vergleichAnzeigen
+    ) {
+
+        const vergangeneVergleich =
+            vergleichsEintraege.filter(
+                eintrag =>
+                    datumAusDeutsch(
+                        eintrag.datum
+                    )
+                    <
+                    heute
+            );
+
+
+        for (
+            const eintrag
+            of vergangeneVergleich
+        ) {
+
+            const kurz =
+                erzeugeVergangeneKurzansicht(
+                    eintrag,
+                    "vergleich"
+                );
+
+
+            fuegeKarteEin(
+                eintrag,
+                "vergleich",
+                kurz
+            );
+        }
+    }
+
+
+    /* =====================================================
+       3. NÄCHSTE EIGENE VORLESUNG
+
+       Sofort laden.
+    ===================================================== */
+
+    if (
+        naechsterEigenerEintrag
+    ) {
+
+        const karte =
+            await ladeVolleKarte(
+                naechsterEigenerEintrag,
+                "eigen",
+                true
+            );
+
+
+        fuegeKarteEin(
+            naechsterEigenerEintrag,
+            "eigen",
+            karte
         );
 
 
         /*
-            Browser bekommt Gelegenheit,
-            bereits etwas darzustellen.
+            Erst jetzt ist die relevante
+            Vorlesung vollständig sichtbar.
+        */
+
+        document
+            .getElementById(
+                "status"
+            )
+            .textContent =
+                "Stammvorlesungsserie "
+                +
+                eigeneSerie;
+
+
+        /*
+            Zur nächsten Vorlesung springen,
+            ohne dass oben Daten nachgeladen
+            werden müssen.
+        */
+
+        setTimeout(
+            function() {
+
+                karte.scrollIntoView({
+                    behavior: "auto",
+                    block: "start"
+                });
+
+            },
+            50
+        );
+    }
+
+
+    /* =====================================================
+       4. RESTLICHE ZUKUNFT IM HINTERGRUND
+    ===================================================== */
+
+    const zukunftEigene =
+        eigeneEintraege.filter(
+
+            eintrag => {
+
+                const datum =
+                    datumAusDeutsch(
+                        eintrag.datum
+                    );
+
+
+                if (
+                    datum < heute
+                ) {
+
+                    return false;
+                }
+
+
+                if (
+                    naechsterEigenerEintrag
+                    &&
+                    eintrag.datei
+                    ===
+                    naechsterEigenerEintrag.datei
+                ) {
+
+                    return false;
+                }
+
+
+                return true;
+            }
+        );
+
+
+    /*
+        Zunächst nur Platzhalter einbauen.
+        Dadurch steht das Seitenlayout
+        sofort fest.
+    */
+
+    const eigenePlatzhalter =
+        [];
+
+
+    for (
+        const eintrag
+        of zukunftEigene
+    ) {
+
+        const platzhalter =
+            document.createElement(
+                "div"
+            );
+
+
+        platzhalter.className =
+            "lade-karte";
+
+
+        platzhalter.textContent =
+            "Vorlesung "
+            +
+            eintrag.vorlesungsnummer
+            +
+            " wird geladen …";
+
+
+        fuegeKarteEin(
+            eintrag,
+            "eigen",
+            platzhalter
+        );
+
+
+        eigenePlatzhalter.push({
+            eintrag,
+            platzhalter
+        });
+    }
+
+
+    /*
+        Vergleich ebenfalls zunächst
+        als Platzhalter.
+    */
+
+    const vergleichPlatzhalter =
+        [];
+
+
+    if (
+        vergleichAnzeigen
+    ) {
+
+        const zukunftVergleich =
+            vergleichsEintraege.filter(
+
+                eintrag =>
+                    datumAusDeutsch(
+                        eintrag.datum
+                    )
+                    >=
+                    heute
+            );
+
+
+        for (
+            const eintrag
+            of zukunftVergleich
+        ) {
+
+            const platzhalter =
+                document.createElement(
+                    "div"
+                );
+
+
+            platzhalter.className =
+                "lade-karte";
+
+
+            platzhalter.textContent =
+                "Vergleichsvorlesung "
+                +
+                eintrag.vorlesungsnummer
+                +
+                " wird geladen …";
+
+
+            fuegeKarteEin(
+                eintrag,
+                "vergleich",
+                platzhalter
+            );
+
+
+            vergleichPlatzhalter.push({
+                eintrag,
+                platzhalter
+            });
+        }
+    }
+
+
+    /*
+        Restliche eigene Vorlesungen
+        Stück für Stück laden.
+    */
+
+    for (
+        const objekt
+        of eigenePlatzhalter
+    ) {
+
+        try {
+
+            const karte =
+                await ladeVolleKarte(
+                    objekt.eintrag,
+                    "eigen",
+                    false
+                );
+
+
+            objekt.platzhalter
+                .replaceWith(
+                    karte
+                );
+
+
+            karte.dataset.typ =
+                "eigen";
+
+
+        } catch (fehler) {
+
+            objekt.platzhalter
+                .textContent =
+                    "Vorlesung konnte nicht geladen werden.";
+        }
+
+
+        /*
+            Browser rendern lassen.
         */
 
         await new Promise(
@@ -1455,275 +2520,53 @@ async function starteSchnellansicht() {
                 )
         );
     }
-}
-
-
-/* =========================================================
-   Vergangenheit lazy laden
-========================================================= */
-
-async function ladeVergangenheit() {
-
-    if (
-        vergangenGeladen
-        ||
-        vergangeneEintraege.length === 0
-        ||
-        vergleichAnzeigen
-    ) {
-
-        return;
-    }
-
-
-    vergangenGeladen =
-        true;
-
-
-    const container =
-        document.getElementById(
-            "inhalt"
-        );
-
-
-    const positionVorher =
-        naechstesElement
-        ?
-        naechstesElement
-            .getBoundingClientRect()
-            .top
-        :
-        null;
 
 
     /*
-        Vergangenheit parallel laden.
-    */
-
-    const elemente =
-        [];
-
-
-    for (
-        const eintrag
-        of vergangeneEintraege
-    ) {
-
-        const tag =
-            await erzeugeTag([
-                {
-                    ...eintrag,
-                    typ: "eigen"
-                }
-            ]);
-
-
-        elemente.push(
-            tag
-        );
-    }
-
-
-    /*
-        In richtiger Reihenfolge
-        oben einfügen.
+        Vergleich im Hintergrund.
     */
 
     for (
-        let i = elemente.length - 1;
-        i >= 0;
-        i--
+        const objekt
+        of vergleichPlatzhalter
     ) {
 
-        container.insertBefore(
-            elemente[i],
-            container.firstChild
-        );
-    }
+        try {
 
-
-    /*
-        Sichtbare aktuelle Vorlesung
-        soll nicht wegspringen.
-    */
-
-    if (
-        naechstesElement
-        &&
-        positionVorher !== null
-    ) {
-
-        const positionNachher =
-            naechstesElement
-                .getBoundingClientRect()
-                .top;
-
-
-        window.scrollBy(
-            0,
-            positionNachher
-            -
-            positionVorher
-        );
-    }
-
-
-    document
-        .getElementById(
-            "vergangenSentinel"
-        )
-        .style.display =
-            "none";
-}
-
-
-/* =========================================================
-   Komplette Ansicht mit Vergleich
-========================================================= */
-
-async function zeichneKompletteAnsicht() {
-
-    const container =
-        document.getElementById(
-            "inhalt"
-        );
-
-
-    container.innerHTML =
-        "";
-
-
-    const sichtbar =
-        eigeneEintraege.map(
-            e => ({
-                ...e,
-                typ: "eigen"
-            })
-        );
-
-
-    if (
-        vergleichAnzeigen
-        &&
-        vergleichsSerie !== null
-    ) {
-
-        const vergleich =
-            indexDaten.vorlesungen
-                .filter(
-                    e =>
-                        Number(
-                            e.stammserie
-                        )
-                        ===
-                        vergleichsSerie
-                )
-                .map(
-                    e => ({
-                        ...e,
-                        typ: "vergleich"
-                    })
+            const karte =
+                await ladeVolleKarte(
+                    objekt.eintrag,
+                    "vergleich",
+                    false
                 );
 
 
-        sichtbar.push(
-            ...vergleich
-        );
-    }
-
-
-    sichtbar.sort(
-        function(a, b) {
-
-            const diff =
-                datumAusDeutsch(
-                    a.datum
-                )
-                -
-                datumAusDeutsch(
-                    b.datum
+            objekt.platzhalter
+                .replaceWith(
+                    karte
                 );
 
 
-            if (
-                diff !== 0
-            ) {
-
-                return diff;
-            }
+            karte.dataset.typ =
+                "vergleich";
 
 
-            return (
-                a.typ === "eigen"
-                ? -1
-                : 1
-            );
+        } catch (fehler) {
+
+            objekt.platzhalter
+                .textContent =
+                    "Vergleichsvorlesung konnte nicht geladen werden.";
         }
-    );
 
 
-    const tage =
-        gruppiereNachDatum(
-            sichtbar
-        );
-
-
-    for (
-        const eintraege
-        of tage.values()
-    ) {
-
-        const tag =
-            await erzeugeTag(
-                eintraege
-            );
-
-
-        container.appendChild(
-            tag
+        await new Promise(
+            resolve =>
+                requestAnimationFrame(
+                    resolve
+                )
         );
     }
-
-
-    document
-        .getElementById(
-            "vergangenSentinel"
-        )
-        .style.display =
-            vergleichAnzeigen
-            ? "none"
-            : "";
 }
-
-
-/* =========================================================
-   Sentinel beobachten
-========================================================= */
-
-const observer =
-    new IntersectionObserver(
-
-        function(eintraege) {
-
-            if (
-                eintraege[0].isIntersecting
-            ) {
-
-                ladeVergangenheit();
-            }
-        },
-
-        {
-            rootMargin: "0px"
-        }
-    );
-
-
-observer.observe(
-    document.getElementById(
-        "vergangenSentinel"
-    )
-);
 
 
 /* =========================================================
@@ -1743,15 +2586,13 @@ async function starteSeite() {
         ) {
 
             throw new Error(
-                "In der Adresse fehlt die Stammvorlesungsserie.\n"
-                +
-                "Beispiel: ?serie=14"
+                "Keine gültige Stammvorlesungsserie angegeben."
             );
         }
 
 
         /*
-            Nur INDEX bewusst frisch laden.
+            Index soll immer aktuell sein.
         */
 
         const antwort =
@@ -1763,7 +2604,9 @@ async function starteSeite() {
             );
 
 
-        if (!antwort.ok) {
+        if (
+            !antwort.ok
+        ) {
 
             throw new Error(
                 "index.json konnte nicht geladen werden."
@@ -1775,12 +2618,16 @@ async function starteSeite() {
             await antwort.json();
 
 
+        /* -------------------------------------------------
+           Eigene Serie
+        ------------------------------------------------- */
+
         eigeneEintraege =
             indexDaten.vorlesungen
                 .filter(
-                    e =>
+                    eintrag =>
                         Number(
-                            e.stammserie
+                            eintrag.stammserie
                         )
                         ===
                         eigeneSerie
@@ -1798,76 +2645,83 @@ async function starteSeite() {
 
 
         if (
-            eigeneEintraege.length === 0
+            eigeneEintraege.length
+            === 0
         ) {
 
             throw new Error(
                 "Für die Stammvorlesungsserie "
-                + eigeneSerie
-                + " wurden keine Vorlesungen gefunden."
+                +
+                eigeneSerie
+                +
+                " wurden keine Vorlesungen gefunden."
             );
         }
 
+
+        /* -------------------------------------------------
+           Vergleich bestimmen
+        ------------------------------------------------- */
 
         vergleichsSerie =
             bestimmeVergleichsSerie();
 
 
+        /* -------------------------------------------------
+           Nächste eigene Vorlesung
+        ------------------------------------------------- */
+
         const heute =
             heuteOhneUhrzeit();
 
 
-        vergangeneEintraege =
-            eigeneEintraege.filter(
-                e =>
-                    datumAusDeutsch(
-                        e.datum
-                    )
-                    <
-                    heute
-            );
+        naechsterEigenerEintrag =
+            eigeneEintraege.find(
 
-
-        zukuenftigeEintraege =
-            eigeneEintraege.filter(
-                e =>
+                eintrag =>
                     datumAusDeutsch(
-                        e.datum
+                        eintrag.datum
                     )
                     >=
                     heute
-            );
-
-
-        /*
-            Erste zukünftige Vorlesung
-        */
-
-        naechsterEigenerEintrag =
-            zukuenftigeEintraege[0]
+            )
             ||
             null;
 
 
         /*
-            Falls alles bereits vorbei:
-            letzte bekannte Vorlesung nehmen.
+            Falls Semester bereits vorbei:
+            letzte Vorlesung verwenden.
         */
 
         if (
             !naechsterEigenerEintrag
-            &&
-            eigeneEintraege.length > 0
         ) {
 
             naechsterEigenerEintrag =
                 eigeneEintraege[
-                    eigeneEintraege.length - 1
+                    eigeneEintraege.length
+                    -
+                    1
                 ];
         }
 
 
-        await starteSchnellansicht();
+        /* -------------------------------------------------
+           Ansicht aufbauen
+        ------------------------------------------------- */
+
+        await baueAnsicht();
+
+
+        document
+            .getElementById(
+                "status"
+            )
+            .textContent =
+                "Stammvorlesungsserie "
+                +
+                eigeneSerie;
 
     }
 
@@ -1903,4 +2757,5 @@ starteSeite();
 </script>
 
 </body>
+
 </html>
